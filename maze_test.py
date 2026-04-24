@@ -276,24 +276,24 @@ def display_ascii(maze: Maze, entry: tuple[int, int], exit: tuple[int, int]) -> 
 
 
 if __name__ == "__main__":
-    width = 25
+    width = 15
     height = 15
-    entry = (0, 0)
-    exit = (24, 14)
-    seed = 42
+    entry = (1, 0)
+    exit = (10, 4)
+    seed = None
 
-    generator = MazeGenerator(
-        width=width,
-        height=height,
-        entry=entry,
-        exit=exit,
-        seed=seed
-    )
+    try:
+        generator = MazeGenerator(
+            width=width,
+            height=height,
+            entry=entry,
+            exit=exit,
+            seed=seed
+        )
 
-    maze = generator.generate()
+        maze = generator.generate()
 
-
-    display_hex(maze)
-    display_ascii(maze, entry, exit)
-
-    print("Starting main")
+        display_hex(maze)
+        display_ascii(maze, entry, exit)
+    except ValueError as error:
+        print(f"Error: {error}")
