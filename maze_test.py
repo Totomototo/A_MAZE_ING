@@ -93,17 +93,17 @@ class Maze:
 
     def place_42(self) -> bool:
         pattern: list[str] = [
-            "100010011111",
-            "100010000001",
-            "111110011111",
-            "000010010000",
-            "000010011111"
+            "10010111",
+            "10010001",
+            "11110111",
+            "00010100",
+            "00010111"
         ]
         pattern_height: int = len(pattern)
         pattern_width: int = len(pattern[0])
 
         if self.width < pattern_width or self.height < pattern_height:
-            print("Error: maze too small to place the 42 pattern")
+            print("Maze too small to place the 42 pattern (min 10x10)")
             return False
 
         start_x: int = (self.width - pattern_width) // 2
@@ -128,20 +128,57 @@ class Maze:
 
 
 class MazeGenerator:
-    def __init__(self, width: int, height: int, seed: int | None = None) -> None:
+    def __init__(
+            self,
+            width: int,
+            height: int,
+            entry: tuple[int, int],
+            exit: tuple[int, int],
+            seed: int | None = None
+        ) -> None:
         self.width: int = width
         self.height: int = height
         self.seed: int | None = seed
+        self.entry: tuple[int, int] = entry
+        self.exit: tuple[int, int] = exit
 
         self.random = random.Random(seed)
         self.maze = Maze(width, height)
+        
+    def validate_entry_exit(self) -> None:
+        entry_x, entry_y = self.entry
+        exit_x, exit_y = self.exit
+
+        if not self.maze.is_inside(entry_x, entry_y):
+            raise ValueError("Entry is outside maze bounds")
+
+        if not self.maze.is_inside(exit_x, exit_y):
+            raise ValueError("Exit is outside maze bounds")
+
+        if self.entry == self.exit:
+            raise ValueError("Entry and exit must be different")
+
+        entry_cell = self.maze.get_cell(entry_x, entry_y)
+        exit_cell = self.maze.get_cell(exit_x, exit_y)
+
+        if entry_cell is None or exit_cell is None:
+            raise ValueError("Invalid entry or exit")
+
+        if entry_cell.is_42:
+            raise ValueError("Entry cannot be inside the 42 pattern")
+
+        if exit_cell.is_42:
+            raise ValueError("Exit cannot be inside the 42 pattern")
+        
 
     def generate(self) -> Maze:
         self.maze.place_42()
-        start: Cell | None = self.maze.get_cell(0, 0)
+        self.validate_entry_exit()
+        entry_x, entry_y = self.entry
+        start: Cell | None = self.maze.get_cell(entry_x, entry_y)
         
         if start is None:
-            raise ValueError("Maze size must be at least 4x4")
+            raise ValueError("Invalid entry")
         start.visited = True
         stack: list[Cell] = [start]
 
@@ -161,7 +198,102 @@ class MazeGenerator:
                 stack.pop()
 
         if not self.maze.no_isolate():
-            raise ValueError("Generated maze is invalid: some cells are isolated by the 42 pattern")
+            raise ValueError("Generated maze is invalid: some normal cells are isolated")
+        
+        exit_x, exit_y = self.exit
+        exit_cell = self.maze.get_cell(exit_x, exit_y)
+
+        if exit_cell is None or not exit_cell.visited:
+            raise ValueError("Exit is unreachable from entry")
         
         return self.maze
     
+
+
+
+
+
+
+
+
+
+###### pour visualiser ####
+#### E = entree
+#### X = exit
+
+def display_hex(maze: Maze) -> None:
+    print("\nHex output:")
+    for row in maze.grid:
+        line = ""
+        for cell in row:
+            line += cell.to_hex()
+        print(line)
+
+
+def display_ascii(maze: Maze, entry: tuple[int, int], exit: tuple[int, int]) -> None:
+    print("\nASCII maze:")
+
+    print("+", end="")
+    for _ in range(maze.width):
+        print("---+", end="")
+    print()
+
+    for y in range(maze.height):
+        print("|", end="")
+
+        for x in range(maze.width):
+            cell = maze.grid[y][x]
+            pos = (x, y)
+
+            if pos == entry:
+                content = " E "
+            elif pos == exit:
+                content = " X "
+            elif cell.is_42:
+                content = " # "
+            else:
+                content = "   "
+
+            print(content, end="")
+
+            if cell.has_wall(Cell.E):
+                print("|", end="")
+            else:
+                print(" ", end="")
+
+        print()
+
+        print("+", end="")
+        for x in range(maze.width):
+            cell = maze.grid[y][x]
+
+            if cell.has_wall(Cell.S):
+                print("---+", end="")
+            else:
+                print("   +", end="")
+
+        print()
+
+
+if __name__ == "__main__":
+    width = 25
+    height = 15
+    entry = (0, 0)
+    exit = (24, 14)
+    seed = 42
+
+    generator = MazeGenerator(
+        width=width,
+        height=height,
+        entry=entry,
+        exit=exit,
+        seed=seed
+    )
+
+    maze = generator.generate()
+
+
+    display_hex(maze)
+    display_ascii(maze, entry, exit)
+
+    print("Starting main")
