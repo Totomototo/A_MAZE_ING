@@ -441,31 +441,3 @@ def display_ascii(
 
         print()
 
-
-if __name__ == "__main__":
-    width = 15
-    height = 15
-    entry = (0, 0)
-    exit = (14, 14)
-    seed = None
-    perfect = False
-
-    try:
-        generator = MazeGenerator(
-            width=width,
-            height=height,
-            entry=entry,
-            exit=exit,
-            seed=None,
-            perfect=False
-        )
-
-        maze = generator.generate()
-        maze.write_hex_file(
-            "maze_output.txt",
-            entry,
-            exit
-        )
-        display_ascii(maze, entry, exit)
-    except ValueError as error:
-        print(f"Error: {error}")

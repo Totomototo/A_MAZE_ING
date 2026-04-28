@@ -1,47 +1,81 @@
 #!/usr/bin/env python3
 
-from maze_generator import MazeGenerator, display_ascii
+import sys
+
+from config_parser import MazeConfig, parse_config_file
+from src.mazegen.maze_generator import Maze, MazeGenerator
 from maze_solver import solve_bfs
+
+try:
+    from maze_display import run_ascii_interface
+except ImportError:
+    run_ascii_interface = None
+
+
+def generate_and_solve(config: MazeConfig) -> tuple[Maze, str]:
+   
+    generator = MazeGenerator(
+        width=config.width,
+        height=config.height,
+        entry=config.entry,
+        exit=config.exit,
+        seed=config.seed,
+        perfect=config.perfect,
+    )
+
+    maze = generator.generate()
+    path = solve_bfs(maze, config.entry, config.exit)
+
+    return maze, path
+
+
+def run_project(config: MazeConfig) -> None:
+ 
+    if config.display and run_ascii_interface is not None:
+        maze, path = run_ascii_interface(
+            width=config.width,
+            height=config.height,
+            entry=config.entry,
+            exit=config.exit,
+            seed=config.seed,
+            perfect=config.perfect,
+        )
+    else:
+        maze, path = generate_and_solve(config)
+
+    maze.write_hex_file(
+        config.output_file,
+        config.entry,
+        config.exit,
+        path,
+    )
+
+    print(f"Maze successfully written to {config.output_file}")
+    print(f"Shortest path length: {len(path)}")
 
 
 def main() -> None:
-    """Generate, solve, display and write a maze."""
-    width = 15
-    height = 15
-    entry = (0, 0)
-    exit = (14, 14)
-    seed = 42
-    perfect = True
-    output_file = "maze_output.txt"
+    if len(sys.argv) != 2:
+        print("Usage: python3 a_maze_ing.py config.txt")
+        return
+
+    config_file = sys.argv[1]
 
     try:
-        generator = MazeGenerator(
-            width=width,
-            height=height,
-            entry=entry,
-            exit=exit,
-            seed=seed,
-            perfect=perfect
-        )
+        config = parse_config_file(config_file)
+        run_project(config)
 
-        maze = generator.generate()
-        path = solve_bfs(maze, entry, exit)
+    except FileNotFoundError:
+        print(f"Error: configuration file not found: {config_file}")
 
-        maze.write_hex_file(
-            output_file,
-            entry,
-            exit,
-            path
-        )
-
-        display_ascii(maze, entry, exit)
-
-        print()
-        print(f"Output file: {output_file}")
-        print(f"Path: {path}")
+    except PermissionError:
+        print(f"Error: permission denied while reading: {config_file}")
 
     except ValueError as error:
         print(f"Error: {error}")
+
+    except OSError as error:
+        print(f"Error: file system error: {error}")
 
 
 if __name__ == "__main__":

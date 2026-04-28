@@ -2,7 +2,7 @@
 
 from collections import deque
 
-from maze_generator import Cell, Maze
+from src.mazegen.maze_generator import Cell, Maze
 
 
 def solve_bfs(
