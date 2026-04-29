@@ -20,11 +20,11 @@ clean:
 	rm -rf build dist *.egg-info src/*.egg-info
 
 lint:
-	$(VENV)/bin/flake8 .
+	$(VENV)/bin/flake8 . --exclude=.venv,build,dist,.egg-info,pycache,.mypy_cache,.pytest_cache
 	$(VENV)/bin/mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 
 lint-strict:
-	$(VENV)/bin/flake8 .
+	$(VENV)/bin/flake8 . --exclude=.venv,build,dist,.egg-info,pycache,.mypy_cache,.pytest_cache
 	$(VENV)/bin/mypy . --strict
 
 build:
