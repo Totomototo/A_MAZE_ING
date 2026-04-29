@@ -13,11 +13,11 @@ clean:
 	rm -rf build dist *.egg-info src/*.egg-info
 
 lint:
-	flake8 .
+	flake8 . --exclude=.venv,venv,build,dist,__pycache__
 	python3 -m mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 
 lint-strict:
-	flake8 .
+	flake8 . --exclude=.venv,venv,build,dist,__pycache__
 	python3 -m mypy . --strict
 
 build:
