@@ -198,6 +198,8 @@ def run_ascii_interface(
         print(f"Perfect: {perfect}")
         print(f"Path visible: {show_path}")
         print(f"Wall color: {wall_color}")
+        print(f"Seed: {seed}")
+        maze.place_42()
         print()
 
         display_ascii(
@@ -225,7 +227,6 @@ def run_ascii_interface(
             if current_seed is None:
                 new_seed = None
             else:
-                current_seed += 1
                 new_seed = current_seed
 
             try:

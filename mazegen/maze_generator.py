@@ -104,7 +104,6 @@ class Maze:
         ]
         pattern_height: int = len(pattern)
         pattern_width: int = len(pattern[0])
-
         if self.width < pattern_width + 2 or self.height < pattern_height + 2:
             print("Maze too small to place the 42")
             return False
