@@ -10,7 +10,7 @@ def solve_bfs(
         entry: tuple[int, int],
         exit: tuple[int, int]
 ) -> str:
-    
+
     entry_cell = maze.get_cell(entry[0], entry[1])
     exit_cell = maze.get_cell(exit[0], exit[1])
 
@@ -48,7 +48,7 @@ def get_accessible_neighbors(
         maze: Maze,
         cell: Cell
 ) -> list[tuple[str, Cell]]:
-    
+
     neighbors: list[tuple[str, Cell]] = []
 
     directions: list[tuple[str, int, int, int]] = [

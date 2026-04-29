@@ -123,13 +123,16 @@ def display_ascii(
 
         print()
 
+
 def choose_wall_color(current_color: str) -> str:
 
     print("\nAvailable colors:")
     for color in WALL_COLORS:
         print(f"- {color}")
 
-    selected = input(f"\nCurrent color is {current_color}. New color: ").strip()
+    selected = input(
+        f"\nCurrent color is {current_color}."
+        f" New color: ").strip()
 
     if selected not in WALL_COLORS:
         print("Invalid color, keeping current color.")

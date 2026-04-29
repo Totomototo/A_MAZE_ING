@@ -379,4 +379,3 @@ class MazeGenerator:
             if not self.maze.would_create_3x3(cell, neighbor):
                 cell.remove_wall(neighbor)
                 opened += 1
-

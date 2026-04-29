@@ -13,7 +13,7 @@ except ImportError:
 
 
 def generate_and_solve(config: MazeConfig) -> tuple[Maze, str]:
-   
+
     generator = MazeGenerator(
         width=config.width,
         height=config.height,
@@ -30,7 +30,7 @@ def generate_and_solve(config: MazeConfig) -> tuple[Maze, str]:
 
 
 def run_project(config: MazeConfig) -> None:
- 
+
     if config.display and run_ascii_interface is not None:
         maze, path = run_ascii_interface(
             width=config.width,
