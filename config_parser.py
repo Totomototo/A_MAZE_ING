@@ -157,6 +157,8 @@ def validate_config_values(
 
     if not output_file:
         raise ValueError("OUTPUT_FILE cannot be empty")
+    if not output_file.endswith(".txt"):
+        raise ValueError("OUTPUT_FILE must be a .txt")
 
     entry_x, entry_y = entry
     exit_x, exit_y = exit
