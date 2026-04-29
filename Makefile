@@ -1,11 +1,18 @@
+PYTHON_SYS = python3
+VENV = .venv
+CONFIG_FILE = config.txt
+
 install:
-	pip install -r requirements.txt
+	$(PYTHON_SYS) -m venv $(VENV)
+	$(VENV)/bin/pip install --upgrade pip setuptools wheel
+	$(VENV)/bin/pip install -r requirements.txt
+	@echo "  source $(VENV)/bin/activate"
 
 run:
-	python3 a_maze_ing.py config.txt
+	$(VENV)/bin/python a_maze_ing.py $(CONFIG_FILE)
 
 debug:
-	python3 -m pdb a_maze_ing.py config.txt
+	$(VENV)/bin/python -m pdb a_maze_ing.py $(CONFIG_FILE)
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
@@ -13,15 +20,15 @@ clean:
 	rm -rf build dist *.egg-info src/*.egg-info
 
 lint:
-	flake8 . --exclude=.venv,venv,build,dist,__pycache__
-	python3 -m mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+	$(VENV)/bin/flake8 .
+	$(VENV)/bin/mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 
 lint-strict:
-	flake8 . --exclude=.venv,venv,build,dist,__pycache__
-	python3 -m mypy . --strict
+	$(VENV)/bin/flake8 .
+	$(VENV)/bin/mypy . --strict
 
 build:
-	python3 -m build
+	$(VENV)/bin/python -m build
 
 package-install:
-	pip install dist/mazegen-1.0.0-py3-none-any.whl
+	$(VENV)/bin/pip install dist/mazegen-1.0.0-py3-none-any.whl
