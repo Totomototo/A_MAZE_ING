@@ -9,10 +9,10 @@ description = "Reusable maze generator for the A-Maze-ing 42 project"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
-    { name = "vavegee" }
+    { name = "vavegee,tbenavid" }
 ]
 license = { text = "MIT" }
 keywords = ["maze", "generator", "42", "python"]
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["."]
