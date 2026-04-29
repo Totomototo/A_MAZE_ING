@@ -2,7 +2,7 @@
 
 import os
 
-from src.mazegen.maze_generator import Cell, Maze, MazeGenerator
+from mazegen.maze_generator import Cell, Maze, MazeGenerator
 from maze_solver import solve_bfs
 
 

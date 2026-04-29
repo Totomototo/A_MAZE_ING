@@ -3,13 +3,9 @@
 import sys
 
 from config_parser import MazeConfig, parse_config_file
-from src.mazegen.maze_generator import Maze, MazeGenerator
+from mazegen.maze_generator import Maze, MazeGenerator
 from maze_solver import solve_bfs
-
-try:
-    from maze_display import run_ascii_interface
-except ImportError:
-    run_ascii_interface = None
+from maze_display import run_ascii_interface
 
 
 def generate_and_solve(config: MazeConfig) -> tuple[Maze, str]:
